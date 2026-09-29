@@ -18,10 +18,15 @@ notes, links , and docs
 #Use this one to run with default setting (no gpu and not depend on nvidia runtime)
 sudo docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 
-#Use this one to run on gpu and nvidia runtime with predefined Ollama Base URL
+#Use this one to run on gpu and nvidia runtime with predefined Ollama Base URL (!However the Ollama API is not accessible from Open Webui)
 sudo docker run -d -p 3000:8080 --gpus all --runtime=nvidia -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:cuda
 
-note: --add-host=host.docker.internal:host-gateway 允許容器內的 Open WebUI 透過該網址直接連回主機的 Ollama 服務。
+
+#Use this one from https://www.jetson-ai-lab.com/tutorials/ollama/ (It Works!)
+sudo docker run -d -p 3000:8080 --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:main
+
+note 1: --add-host=host.docker.internal:host-gateway 允許容器內的 Open WebUI 透過該網址直接連回主機的 Ollama 服務。
+note 2: -e OLLAMA_BASE_URL=http://127.0.0.1:11434  seems not effective by default (i setup the connection manually in open-webui)
 ```
 
 > you will be able to connect to http://localhost:3000/ via browser to ask question and chose model.
